@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JStudios Radio</title>
+
+<style>
+    body {
+        margin: 0;
+        background: #0d0d0d;
+        color: white;
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+
+    header {
+        background: linear-gradient(90deg, #00ffcc, #0077ff);
+        padding: 20px;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+
+    #cover {
+        width: 350px;
+        height: 350px;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 0 25px black;
+        margin-top: 30px;
+        display: none;
+    }
+
+    #playBtn {
+        margin-top: 40px;
+        background: #00ffcc;
+        color: black;
+        padding: 18px 40px;
+        font-size: 1.4rem;
+        border-radius: 50px;
+        border: none;
+        cursor: pointer;
+        transition: 0.2s;
+        font-weight: bold;
+    }
+
+    #playBtn:hover {
+        background: #00e6b8;
+    }
+
+    audio {
+        margin-top: 30px;
+    }
+</style>
+</head>
+<body>
+
+<header>JStudios Radio 🎧</header>
+
+<img id="cover" src="" alt="Cover">
+
+<button id="playBtn">▶️ Start Radio</button>
+
+<audio id="player"></audio>
+
+<script>
+    // ===== JINGLE BESTANDEN =====
+    const jingles = [
+        "jingle1.mp3",
+        "jingle2.mp3",
+        "jingle3.mp3"
+    ];
+
+    // ===== MUZIEK (zelfde naam als foto!) =====
+    const songs = [
+        "track1.mp3",
+        "track2.mp3",
+        "track3.mp3"
+    ];
+
+    const player = document.getElementById("player");
+    const cover = document.getElementById("cover");
+    const playBtn = document.getElementById("playBtn");
+
+    let mode = "jingle";  // start met jingle
+
+    playBtn.addEventListener("click", () => {
+        playBtn.disabled = true;
+        mode = "jingle";
+        playNext();
+    });
+
+    function playNext() {
+        if (mode === "jingle") {
+            playRandomJingle();
+        } else {
+            playRandomSong();
+        }
+    }
+
+    // ---------- RANDOM JINGLE ----------
+    function playRandomJingle() {
+        const randomJingle = jingles[Math.floor(Math.random() * jingles.length)];
+
+        cover.style.display = "none";
+        player.src = "Jingle/" + randomJingle;
+        player.play();
+
+        player.onended = () => {
+            mode = "music";
+            playNext();
+        };
+    }
+
+    // ---------- RANDOM MUZIEK ----------
+    function playRandomSong() {
+        const randomSong = songs[Math.floor(Math.random() * songs.length)];
+        const baseName = randomSong.replace(".mp3", "");
+
+        const png = "Picture/" + baseName + ".png";
+        const jpg = "Picture/" + baseName + ".jpg";
+
+        fetch(png).then(res => {
+            cover.src = res.ok ? png : jpg;
+            cover.style.display = "block";
+        });
+
+        player.src = "Muziek/" + randomSong;
+        player.play();
+
+        player.onended = () => {
+            mode = "jingle";
+            playNext();
+        };
+    }
+</script>
+
+</body>
+</html>
